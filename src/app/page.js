@@ -1,16 +1,32 @@
 "use client"
 import Image from "next/image";
 import jesus from "@/app/public/jesus2.jpg"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/header";
 import Footer from "./components/footer";
 import familia from "@/app/public/familia.jpg"
 import vitoria from "@/app/public/vitoria2.jpg"
 import doutrina from "@/app/public/biblia.jpg"
+import { createClient } from '@supabase/supabase-js'
 
 
 export default function Home() {
 
+  const supabaseLogin = "https://rntbzvmnnrestpcjnpew.supabase.co"  
+  const supabase = createClient(supabaseLogin, `${process.env.SUPABASE_KEY}`)
+  const fetchProgramacao = async () => {
+    const { data, error } = await supabase.from('programacao').select();
+    if (error) {
+        console.log("Erro ao buscar programação:", error);
+    } else {
+        setProgramacao(data);
+        console.log("Programação:", data);
+    }
+};
+  useEffect(() => {
+    fetchProgramacao();
+  }, [])
+  
   const [horarios, setHorarios] = useState([{name: "Culto da vitória", horario: 19, type: vitoria},{name: "Culto de doutrina", horario: 19, type: doutrina}, {name: "Culto da familia", horario: 16, type: familia}]);
   const [programacao, setProgramacao] = useState([{name: "Escola Biblica Dominical", horario: 16, dia: "Domingo"}])
   return (
